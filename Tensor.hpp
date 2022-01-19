@@ -3,19 +3,21 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <functional>
 
 class Tensor {
     public:
         Tensor() = delete;
-        Tensor(float* data);
-        Tensor(float* data, bool requires_grad);
+        Tensor(size_t size);
+        Tensor(std::vector<size_t>& shape);
+        Tensor(float* data, size_t size);
+        Tensor(float* data, size_t size, bool requires_grad);
         Tensor(float* data, std::vector<size_t>& shape);
         Tensor(float* data, std::vector<size_t>& shape, bool requires_grad);
-        Tensor& operator= (Tensor& t);
-        Tensor& operator+= (Tensor& t);
-        Tensor& operator-= (Tensor& t);
-        Tensor& operator*= (float o);
-        Tensor& operator*= (Tensor& t);
+        Tensor& operator+= (Tensor& t) = delete;
+        Tensor& operator-= (Tensor& t) = delete;
+        Tensor& operator*= (float o) = delete;
+        Tensor& operator*= (Tensor& t) = delete;
         Tensor& operator+ (Tensor& t);
         Tensor& operator- (Tensor& t);
         Tensor& operator* (float o);
@@ -35,9 +37,9 @@ class Tensor {
         size_t __size;
         std::vector<size_t> __shape;
         std::vector<Tensor> __nodes;
+        std::function<void()> __backward;
+        bool __visited = false;
 
-        float* operator+ (float* o);
-        float* operator- (float* o);
-        float* operator* (float* o);
+        void __topological_sort(Tensor& t, std::vector<Tensor>& topological_order);
 };
 
