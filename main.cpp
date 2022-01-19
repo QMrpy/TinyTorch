@@ -8,10 +8,14 @@ void print_tensor(Tensor& t) {
         std::cout << t.data()[i] << " ";
     std::cout << std::endl;
 
-    std::cout << "Printing Tensor gradient data: " << std::endl;
-    for (int i = 0; i < t.size(); i++) 
-        std::cout << t.gradient()[i] << " ";
-    std::cout << std::endl;    
+    if (t.requires_grad()) {
+        std::cout << "Printing Tensor gradient data: " << std::endl;
+        for (int i = 0; i < t.size(); i++) 
+            std::cout << t.gradient()[i] << " ";
+        std::cout << std::endl;
+    } else {
+        std::cout << "Tensor has requires_grad=false." << std::endl;
+    }    
 }
 
 int main() {
@@ -19,6 +23,7 @@ int main() {
     std::vector<size_t> a_shape = {2, 2};
 
     Tensor* a = new Tensor(&a_data[0], a_shape);
+    a->set_requires_grad();
 
     float b_data[4] = {6.0f, 2.0f, 4.0f, 3.0f};
     std::vector<size_t> b_shape = {2, 2};
@@ -47,7 +52,6 @@ int main() {
 
     std::cout << "Checking correctness of Tensor gradient operations." << std::endl;
 
-    a->set_requires_grad();
     h.backward();
 
     print_tensor(*a);

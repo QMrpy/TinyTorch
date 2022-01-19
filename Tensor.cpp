@@ -20,7 +20,7 @@ Tensor::Tensor(std::vector<size_t>& shape) : __shape(shape) {
     __size = 1;
     for (int i = 0; i < __shape.size(); i++) {
         if (__shape[i] <= 0)
-            throw std::runtime_error("Got impossible size for shape of Tensor at dimension: " + i);
+            throw std::runtime_error("Got impossible size for shape of Tensor.");
         __size *= __shape[i];
     }
 }
@@ -62,7 +62,7 @@ Tensor::Tensor(float* data, std::vector<size_t>& shape) : __data(data), __shape(
     __size = 1;
     for (int i = 0; i < __shape.size(); i++) {
         if (__shape[i] <= 0)
-            throw std::runtime_error("Got impossible size for shape of Tensor at dimension: " + i);
+            throw std::runtime_error("Got impossible size for shape of Tensor.");
         __size *= __shape[i];
     }
 }
@@ -79,7 +79,7 @@ Tensor::Tensor(float* data, std::vector<size_t>& shape, bool requires_grad)
     __size = 1;
     for (int i = 0; i < __shape.size(); i++) {
         if (__shape[i] <= 0)
-            throw std::runtime_error("Got impossible size for shape of Tensor at dimension: " + i);
+            throw std::runtime_error("Got impossible size for shape of Tensor.");
         __size *= __shape[i];
     }
 

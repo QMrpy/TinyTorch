@@ -7,8 +7,8 @@ set(tensor_hdrs "./Tensor.hpp")
 set(tensor_srcs "./Tensor.cpp")
 
 add_library(tensor
-    {tensor_hdrs}
-    {tensor_srcs})
+    ${tensor_srcs}
+    ${tensor_hdrs})
 
 add_executable(tinytorch "./main.cpp")
 
