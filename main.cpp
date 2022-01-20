@@ -11,6 +11,7 @@ int main() {
     std::vector<size_t> b_shape = {3, 4};
 
     Tensor* b = new Tensor(&b_data[0], b_shape);
+    b->set_requires_grad();
 
     std::cout << "Checking correctness of Tensor constructors." << std::endl;
 
@@ -19,22 +20,22 @@ int main() {
 
     std::cout << "Checking correctness of Tensor addition and multiplication operations." << std::endl;
 
-    Tensor c = (*a) + (*b);
+    Tensor c = (*a) * (*a);
     std::cout << c << std::endl;
 
-    Tensor d = (*a) - (*b);
+    Tensor d = (*b) * (*b) * 7.0f;
     std::cout << d << std::endl;
 
-    Tensor e = (*b) * 4;
+    Tensor e = (*b) * 4.0f;
     std::cout << e << std::endl;
 
-    Tensor f = (*a) * (*b);
+    Tensor f = (*a) * (*b) * (*a);
     std::cout << f << std::endl;
 
-    Tensor g = (*a) * (*a) * (*a);
+    Tensor g = (*a) * 5.0f;
     std::cout << g << std::endl;
 
-    Tensor h = (*a) + g;
+    Tensor h = (*a) + (*b) + c + (d * d) + (e * f) + (g * 7.9f);
     std::cout << h << std::endl;
 
     std::cout << "Checking correctness of Tensor gradient operations." << std::endl;
@@ -42,6 +43,11 @@ int main() {
     h.backward();
 
     std::cout << *a << std::endl;
+    std::cout << *b << std::endl;
+    std::cout << c << std::endl;
+    std::cout << d << std::endl;
+    std::cout << e << std::endl;
+    std::cout << f << std::endl;
     std::cout << g << std::endl;
     std::cout << h << std::endl;
 

@@ -131,7 +131,7 @@ Tensor& Tensor::operator* (float o) {
         res->set_requires_grad();
         res->__nodes.push_back(this);
 
-        auto lambda = [&, res] () {
+        auto lambda = [&, o, res] () {
             for (int i = 0; i < __size; i++) {
                 __grad[i] += o * res->__grad[i];
             }
