@@ -102,10 +102,10 @@ Tensor& Tensor::operator+ (Tensor& t) {
 
     if (__requires_grad && t.requires_grad()) {
         res->set_requires_grad();
-        res->__nodes.push_back(*this);
-        res->__nodes.push_back(t);
+        res->__nodes.push_back(this);
+        res->__nodes.push_back(&t);
 
-        auto lambda = [&] () {
+        auto lambda = [&, res] () {
             for (int i = 0; i < __size; i++) {
                 __grad[i] += res->__grad[i];
                 t.__grad[i] += res->__grad[i];
@@ -129,9 +129,9 @@ Tensor& Tensor::operator* (float o) {
 
     if (__requires_grad) {
         res->set_requires_grad();
-        res->__nodes.push_back(*this);
+        res->__nodes.push_back(this);
 
-        auto lambda = [&] () {
+        auto lambda = [&, res] () {
             for (int i = 0; i < __size; i++) {
                 __grad[i] += o * res->__grad[i];
             }
@@ -156,10 +156,10 @@ Tensor& Tensor::operator* (Tensor& t) {
 
     if (__requires_grad && t.requires_grad()) {
         res->set_requires_grad();
-        res->__nodes.push_back(*this);
-        res->__nodes.push_back(t);
+        res->__nodes.push_back(this);
+        res->__nodes.push_back(&t);
 
-        auto lambda = [&] () {
+        auto lambda = [&, res] () {
             for (int i = 0; i < __size; i++) {
                 __grad[i] += t.__data[i] * res->__grad[i];
                 t.__grad[i] += __data[i] * res->__grad[i];
@@ -203,18 +203,39 @@ void Tensor::backward() {
     if (!__requires_grad)
         throw std::runtime_error("Cannot compute gradients on a Tensor with requires_grad=false.");
 
-    std::vector<Tensor> topological_order;
-    __topological_sort(*this, topological_order);
+    std::vector<Tensor*> topological_order;
+    __topological_sort(this, topological_order);
 
     std::reverse(topological_order.begin(), topological_order.end());
-    for (auto& t: topological_order)
-        t.__backward();
+    for (auto t: topological_order) {
+        if (t->__backward)
+            t->__backward();
+    }
 }
 
-void Tensor::__topological_sort(Tensor& t, std::vector<Tensor>& topological_order) {
-    if (!t.__visited) {
-        t.__visited = true;
-        for (auto& node: t.__nodes) {
+std::ostream& operator<< (std::ostream& stream, Tensor& t) {
+    stream << std::endl;
+
+    stream << "Tensor(data=[";
+    for (int i = 0; i < t.size(); i++) 
+        stream << t.data()[i] << ",";
+
+    stream << "], gradient=[";
+    if (t.requires_grad()) {
+        for (int i = 0; i < t.size(); i++) 
+            stream << t.gradient()[i] << ",";
+        stream << "])" << std::endl;
+    } else {
+        stream << "None])" << std::endl;
+    }
+
+    return stream;
+}
+
+void Tensor::__topological_sort(Tensor* t, std::vector<Tensor*>& topological_order) {
+    if (!t->__visited) {
+        t->__visited = true;
+        for (auto node: t->__nodes) {
             __topological_sort(node, topological_order);
         }
 

@@ -1,23 +1,5 @@
 #include "Tensor.hpp"
 
-void print_tensor(Tensor& t) {
-    std::cout << std::endl;
-
-    std::cout << "Printing Tensor data: " << std::endl;
-    for (int i = 0; i < t.size(); i++) 
-        std::cout << t.data()[i] << " ";
-    std::cout << std::endl;
-
-    if (t.requires_grad()) {
-        std::cout << "Printing Tensor gradient data: " << std::endl;
-        for (int i = 0; i < t.size(); i++) 
-            std::cout << t.gradient()[i] << " ";
-        std::cout << std::endl;
-    } else {
-        std::cout << "Tensor has requires_grad=false." << std::endl;
-    }    
-}
-
 int main() {
     float a_data[4] = {1.0f, 1.0f, 2.0f, 2.0f};
     std::vector<size_t> a_shape = {2, 2};
@@ -33,30 +15,30 @@ int main() {
     std::cout << "Checking correctness of Tensor addition and multiplication operations." << std::endl;
 
     Tensor c = (*a) + (*b);
-    print_tensor(c);
+    std::cout << c << std::endl;
 
     Tensor d = (*a) - (*b);
-    print_tensor(d);
+    std::cout << d << std::endl;
 
     Tensor e = (*b) * 4;
-    print_tensor(e);
+    std::cout << e << std::endl;
 
     Tensor f = (*a) * (*b);
-    print_tensor(f);
+    std::cout << f << std::endl;
 
     Tensor g = (*a) * (*a);
-    print_tensor(g);
+    std::cout << g << std::endl;
 
     Tensor h = (*a) + g;
-    print_tensor(h);
+    std::cout << h << std::endl;
 
     std::cout << "Checking correctness of Tensor gradient operations." << std::endl;
 
     h.backward();
 
-    print_tensor(*a);
-    print_tensor(g);
-    print_tensor(h); 
+    std::cout << *a << std::endl;
+    std::cout << g << std::endl;
+    std::cout << h << std::endl;
 
     return 0;
 }

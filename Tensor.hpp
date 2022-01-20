@@ -29,6 +29,7 @@ class Tensor {
         float* data();
         float* gradient();
         void backward();
+        friend std::ostream& operator<< (std::ostream& stream, Tensor& t);
 
     private:
         float* __data;
@@ -36,10 +37,10 @@ class Tensor {
         bool __requires_grad = false;
         size_t __size;
         std::vector<size_t> __shape;
-        std::vector<Tensor> __nodes;
+        std::vector<Tensor*> __nodes;
         std::function<void()> __backward;
         bool __visited = false;
 
-        void __topological_sort(Tensor& t, std::vector<Tensor>& topological_order);
+        void __topological_sort(Tensor* t, std::vector<Tensor*>& topological_order);
 };
 
