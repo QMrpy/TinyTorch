@@ -14,15 +14,15 @@ Tensor::Tensor(std::vector<size_t>& shape) : __shape(shape) {
     if (__shape.empty())
         throw std::runtime_error("Cannot create a Tensor with given shape.");
 
-    __data = new float[__size];
-    std::fill(__data, __data + __size, 0.0);
-
     __size = 1;
     for (int i = 0; i < __shape.size(); i++) {
         if (__shape[i] <= 0)
             throw std::runtime_error("Got impossible size for shape of Tensor.");
         __size *= __shape[i];
     }
+
+    __data = new float[__size];
+    std::fill(__data, __data + __size, 0.0);
 }
 
 Tensor::Tensor(float* data, size_t size) : __data(data), __size(size) {
@@ -48,7 +48,7 @@ Tensor::Tensor(float* data, size_t size, bool requires_grad)
 
     if (__requires_grad) {
        __grad = new float[__size];
-       std::fill(__grad, __grad + __size, 1.0);
+       std::fill(__grad, __grad + __size, 0.0);
     }
 }
 
@@ -85,7 +85,7 @@ Tensor::Tensor(float* data, std::vector<size_t>& shape, bool requires_grad)
 
     if (__requires_grad) {
        __grad = new float[__size];
-       std::fill(__grad, __grad + __size, 1.0);
+       std::fill(__grad, __grad + __size, 0.0);
     }
 }
 
@@ -182,7 +182,7 @@ std::vector<size_t> Tensor::shape() {
 
 void Tensor::set_requires_grad() {
     __grad = new float[__size];
-    std::fill(__grad, __grad + __size, 1.0);
+    std::fill(__grad, __grad + __size, 0.0);
 
     __requires_grad = true;
 }
@@ -207,6 +207,8 @@ void Tensor::backward() {
     __topological_sort(this, topological_order);
 
     std::reverse(topological_order.begin(), topological_order.end());
+    std::fill(this->__grad, this->__grad + this->__size, 1.0);
+
     for (auto t: topological_order) {
         if (t->__backward)
             t->__backward();
