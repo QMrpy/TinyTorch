@@ -17,10 +17,12 @@ class Tensor {
         Tensor& operator+= (Tensor& t) = delete;
         Tensor& operator-= (Tensor& t) = delete;
         Tensor& operator*= (float o) = delete;
+        friend Tensor& operator*= (float o, Tensor& t) = delete;
         Tensor& operator*= (Tensor& t) = delete;
         Tensor& operator+ (Tensor& t);
         Tensor& operator- (Tensor& t);
         Tensor& operator* (float o);
+        friend Tensor& operator* (float o, Tensor& t);
         Tensor& operator* (Tensor& t);
         size_t size();
         std::vector<size_t> shape();

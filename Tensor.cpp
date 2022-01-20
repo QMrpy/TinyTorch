@@ -143,6 +143,10 @@ Tensor& Tensor::operator* (float o) {
     return *res;
 }
 
+Tensor& operator* (float o, Tensor& t) {
+    return t * o;
+}
+
 Tensor& Tensor::operator* (Tensor& t) {
     if (t.data() == nullptr)
         throw std::runtime_error("Received null operand while trying to perform multiplication.");

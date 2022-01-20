@@ -32,7 +32,7 @@ int main() {
     Tensor f = (*a) * (*b) * (*a);
     std::cout << f << std::endl;
 
-    Tensor g = (*a) * 5.0f;
+    Tensor g = 5.0f * (*a);
     std::cout << g << std::endl;
 
     Tensor h = (*a) + (*b) + c + (d * d) + (e * f) + (g * 7.9f);
