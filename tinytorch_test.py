@@ -1,7 +1,7 @@
-import tinytorch_py
+import tinytorch_py as torch
 
-a = tinytorch_py.Tensor([1, 2, 3], 3)
-b = tinytorch_py.Tensor([3, 4, 5], 3)
+a = torch.Tensor([1, 2, 3], 3)
+b = torch.Tensor([3, 4, 5], 3)
 
 print("a = ", a)
 print("b = ", b)
